@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Juego de Damas Mejorado</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #51c4d3, #126e82);
+      margin: 0;
+      font-family: sans-serif;
+    }
+    .info, .reglas {
+      max-width: 960px;
+      padding: 10px;
+      font-size: 14px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.4);
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+    .info {
+      display: flex;
+      justify-content: space-between;
+      width: 480px;
+      font-size: 18px;
+      display: none;
+    }
+    .controles {
+      margin-bottom: 10px;
+      display: none;
+    }
+    .tablero {
+      display: grid;
+      grid-template-columns: repeat(8, 60px);
+      grid-template-rows: repeat(8, 60px);
+      border: 4px solid #222;
+      display: none;
+    }
+    .casilla {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .blanca { background-color: #ffffff; }
+    .negra { background-color: #008000; }
+    .destino { box-shadow: inset 0 0 0 3px yellow; }
+    .ficha {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+    }
+    .roja { background-color: red; }
+    .negraFicha { background-color: black; }
+    .dama::after {
+      content: "\1F451";
+      font-size: 18px;
+      color: white;
+      position: absolute;
+      top: 5px;
+      left: 10px;
+    }
+    #btnPlay {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="color: white;">Juego de Damas</h2>
+
+<button id="btnPlay">Jugar</button>
+
+<div class="info" id="info">
+  <div>Rojo: <span id="puntosRojo">0</span> puntos</div>
+  <div>Tiempo: <span id="temporizador">00:00</span></div>
+  <div>Negro: <span id="puntosNegro">0</span> puntos</div>
+</div>
+
+<div class="controles" id="controles">
+  <button onclick="togglePausa()" id="btnPausa">Pausar</button>
+</div>
+
+<div class="reglas" id="reglas">
+  <h3>Reglamento del Juego de Damas</h3>
+  <ul>
+    <li>El juego se realiza sobre un tablero de 8x8 casillas, alternando blanco y verde.</li>
+    <li>Las fichas se colocan sobre las casillas blancas.</li>
+    <li>Cada jugador comienza con 12 fichas. Rojo juega desde abajo y mueve primero.</li>
+    <li>Las fichas normales sólo pueden moverse hacia adelante en diagonal y capturar en esa dirección.</li>
+    <li>La captura es obligatoria si hay posibilidad de comer (ley de cantidad y calidad).</li>
+    <li>Si no se captura cuando es posible, el oponente puede retirar la ficha infractora ("soplar").</li>
+    <li>Cuando una ficha llega a la última fila del oponente, se convierte en dama.</li>
+    <li>La dama se mueve en cualquier diagonal y puede realizar múltiples capturas en cadena.</li>
+    <li>No se pueden saltar dos piezas juntas ni una pieza propia.</li>
+    <li>Si un jugador pierde todas sus fichas o no puede mover, pierde la partida.</li>
+    <li>Empate si hay repetición de posición o acuerdo entre jugadores.</li>
+  </ul>
+</div>
+
+<div class="tablero" id="tablero"></div>
+
+<script>
+  const btnPlay = document.getElementById("btnPlay");
+  const tablero = document.getElementById("tablero");
+  const info = document.getElementById("info");
+  const controles = document.getElementById("controles");
+  const temporizadorSpan = document.getElementById("temporizador");
+  const reglas = document.getElementById("reglas");
+
+  let segundos = 0;
+  let temporizador;
+  let pausado = false;
+  let fichaSeleccionada = null;
+
+  btnPlay.addEventListener("click", () => {
+    btnPlay.style.display = "none";
+    info.style.display = "flex";
+    controles.style.display = "block";
+    tablero.style.display = "grid";
+    reglas.style.display = "none";
+    crearTablero();
+    temporizador = setInterval(actualizarTiempo, 1000);
+  });
+
+  function actualizarTiempo() {
+    if (!pausado) {
+      segundos++;
+      const min = String(Math.floor(segundos / 60)).padStart(2, '0');
+      const seg = String(segundos % 60).padStart(2, '0');
+      temporizadorSpan.textContent = `${min}:${seg}`;
+    }
+  }
+
+  function togglePausa() {
+    pausado = !pausado;
+    document.getElementById("btnPausa").textContent = pausado ? "Reanudar" : "Pausar";
+  }
+
+  function crearTablero() {
+    for (let fila = 0; fila < 8; fila++) {
+      for (let col = 0; col < 8; col++) {
+        const casilla = document.createElement("div");
+        casilla.classList.add("casilla", (fila + col) % 2 === 0 ? "blanca" : "negra");
+        casilla.dataset.fila = fila;
+        casilla.dataset.col = col;
+        casilla.addEventListener("click", () => moverFicha(casilla));
+        tablero.appendChild(casilla);
+
+        if ((fila < 3 || fila > 4) && (fila + col) % 2 === 0) {
+          const ficha = document.createElement("div");
+          ficha.classList.add("ficha", fila < 3 ? "negraFicha" : "roja");
+          ficha.dataset.color = fila < 3 ? "negraFicha" : "roja";
+          ficha.draggable = false;
+          ficha.addEventListener("click", (e) => {
+            e.stopPropagation();
+            fichaSeleccionada = ficha;
+          });
+          casilla.appendChild(ficha);
+        }
+      }
+    }
+  }
+
+  function moverFicha(casillaDestino) {
+    if (fichaSeleccionada && casillaDestino.children.length === 0 && casillaDestino.classList.contains("blanca")) {
+      casillaDestino.appendChild(fichaSeleccionada);
+      fichaSeleccionada = null;
+    }
+  }
+</script>
+
+</body>
+</html>

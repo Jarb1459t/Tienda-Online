@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CiberSec 101 — Curso de Ciberseguridad Básica</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050a0e;
+    --surface: #0a141c;
+    --border: #0f2535;
+    --accent: #00f5c4;
+    --accent2: #ff3c6e;
+    --accent3: #f5a623;
+    --text: #c8dce8;
+    --muted: #4a6477;
+    --glow: 0 0 20px rgba(0,245,196,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,196,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,196,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCANLINE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 60px 40px 40px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,245,196,0.04) 0%, transparent 100%);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 10px;
+    letter-spacing: 2px;
+    animation: pulse-border 2s infinite;
+  }
+
+  @keyframes pulse-border {
+    0%, 100% { border-color: var(--accent); box-shadow: none; }
+    50% { border-color: var(--accent); box-shadow: var(--glow); }
+  }
+
+  h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(32px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+
+  h1 span {
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(0,245,196,0.6);
+  }
+
+  .tagline {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 16px;
+    letter-spacing: 1px;
+  }
+
+  .tagline span { color: var(--accent); }
+
+  .meta-row {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .meta-item .icon {
+    font-size: 20px;
+  }
+
+  .meta-item strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* OBJETIVOS */
+  .objectives-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 60px;
+  }
+
+  .obj-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .obj-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+  }
+
+  .obj-card:hover {
+    border-color: rgba(0,245,196,0.3);
+    transform: translateY(-2px);
+  }
+
+  .obj-icon { font-size: 28px; margin-bottom: 12px; }
+  .obj-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .obj-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* MÓDULOS */
+  .modules { margin-bottom: 60px; }
+
+  .module {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .module:hover { border-color: rgba(0,245,196,0.2); }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 28px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .module-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    min-width: 28px;
+    letter-spacing: 1px;
+  }
+
+  .module-info { flex: 1; }
+
+  .module-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .module-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  .module-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .module-duration {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    white-space: nowrap;
+  }
+
+  .module-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border: 1px solid;
+    letter-spacing: 1px;
+    font-family: 'Share Tech Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .tag-teoria { color: #64b5f6; border-color: #64b5f6; }
+  .tag-practica { color: var(--accent2); border-color: var(--accent2); }
+  .tag-lab { color: var(--accent); border-color: var(--accent); }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 18px;
+    transition: transform 0.3s;
+  }
+
+  .module.open .chevron { transform: rotate(90deg); }
+
+  .module-body {
+    display: none;
+    padding: 0 28px 28px;
+    border-top: 1px solid var(--border);
+  }
+
+  .module.open .module-body { display: block; }
+
+  .lessons {
+    list-style: none;
+    margin-top: 20px;
+  }
+
+  .lesson {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(15,37,53,0.6);
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .lesson:last-child { border-bottom: none; }
+
+  .lesson-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: 7px;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px var(--accent);
+  }
+
+  .lesson-name { flex: 1; }
+
+  .lesson-type {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .module-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(0,245,196,0.03);
+    border-left: 2px solid var(--accent);
+  }
+
+  /* HERRAMIENTAS */
+  .tools-section { margin-bottom: 60px; }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 18px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .tool-card:hover {
+    border-color: rgba(0,245,196,0.4);
+    background: rgba(0,245,196,0.04);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .tool-icon { font-size: 32px; margin-bottom: 10px; }
+  .tool-name { font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 4px; }
+  .tool-desc { font-size: 11px; color: var(--muted); font-family: 'Share Tech Mono', monospace; }
+
+  /* EVALUACIÓN */
+  .eval-section { margin-bottom: 60px; }
+
+  .eval-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .eval-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    text-align: center;
+  }
+
+  .eval-pct {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0,245,196,0.5);
+    line-height: 1;
+  }
+
+  .eval-name {
+    font-weight: 700;
+    color: #fff;
+    margin: 10px 0 6px;
+    font-size: 15px;
+  }
+
+  .eval-desc { font-size: 12px; color: var(--muted); }
+
+  /* PERFIL OBJETIVO */
+  .profile-section { margin-bottom: 60px; }
+
+  .profile-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 640px) {
+    .profile-row { grid-template-columns: 1fr; }
+    .meta-row { gap: 16px; }
+    header { padding: 40px 24px 30px; }
+    main { padding: 40px 24px; }
+    h1 { font-size: 36px; }
+  }
+
+  .profile-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+  }
+
+  .profile-box h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    color: var(--accent2);
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+  }
+
+  .profile-list { list-style: none; }
+
+  .profile-list li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .profile-list li:last-child { border-bottom: none; }
+  .profile-list li::before { content: '›'; color: var(--accent); font-size: 18px; }
+
+  /* CERTIFICADO */
+  .cert-section {
+    background: linear-gradient(135deg, rgba(0,245,196,0.06) 0%, rgba(255,60,110,0.04) 100%);
+    border: 1px solid rgba(0,245,196,0.2);
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .cert-section::before {
+    content: '🔐';
+    position: absolute;
+    font-size: 200px;
+    opacity: 0.04;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  .cert-section h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .cert-section p {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 500px;
+    margin: 0 auto 24px;
+  }
+
+  .cert-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 14px 32px;
+    letter-spacing: 2px;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    padding: 30px 40px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+  }
+
+  .terminal-text {
+    color: var(--accent);
+    animation: blink 1.2s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    margin-top: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0%;
+    transition: width 1s ease;
+  }
+
+  /* REVEAL ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="badge">NIVEL BÁSICO</div>
+    <div class="badge" style="color:var(--accent2);border-color:var(--accent2);">v1.0 — 2025</div>
+  </div>
+  <h1>CIBER<span>SEC</span> 101</h1>
+  <div style="height:8px"></div>
+  <h1 style="font-size:clamp(16px,2.5vw,28px);color:var(--muted);font-weight:400;font-family:'Rajdhani',sans-serif;letter-spacing:2px;">Fundamentos de Ciberseguridad</h1>
+  <p class="tagline">// Protege tu mundo digital <span>_</span></p>
+  <div class="meta-row">
+    <div class="meta-item"><span class="icon">⏱</span> Duración: <strong>40 horas</strong></div>
+    <div class="meta-item"><span class="icon">📚</span> Módulos: <strong>8</strong></div>
+    <div class="meta-item"><span class="icon">🎯</span> Modalidad: <strong>Teórico-Práctica</strong></div>
+    <div class="meta-item"><span class="icon">💻</span> Entorno: <strong>Labs virtuales</strong></div>
+    <div class="meta-item"><span class="icon">🏆</span> Certificado: <strong>Al completar</strong></div>
+  </div>
+  <div class="progress-bar" style="margin-top:32px;max-width:400px;">
+    <div class="progress-fill" id="mainProgress"></div>
+  </div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:6px;">PREREQUISITOS: 0% — Sin conocimientos previos requeridos</div>
+</header>
+
+<main>
+
+  <!-- OBJETIVOS -->
+  <div class="section-title">01 / Objetivos del Curso</div>
+  <div class="objectives-grid reveal" style="animation-delay:0.1s">
+    <div class="obj-card">
+      <div class="obj-icon">🛡️</div>
+      <div class="obj-title">Defensa Personal Digital</div>
+      <div class="obj-desc">Identificar y neutralizar amenazas cotidianas en internet y dispositivos personales.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-icon">🔍</div>
+      <div class="obj-title">Pensamiento Analítico</div>
+      <div class="obj-desc">Desarrollar criterio crítico para detectar ataques como phishing, malware y fraudes.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-icon">🔑</div>
+      <div class="obj-title">Gestión de Accesos</div>
+      <div class="obj-desc">Dominar contraseñas seguras, autenticación multifactor y privacidad en línea.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-icon">🌐</div>
+      <div class="obj-title">Redes Seguras</div>
+      <div class="obj-desc">Entender cómo funciona internet, sus vulnerabilidades y cómo navegar con seguridad.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-icon">⚖️</div>
+      <div class="obj-title">Marco Legal y Ético</div>
+      <div class="obj-desc">Conocer las normativas vigentes, responsabilidades y ética en ciberseguridad.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-icon">🚀</div>
+      <div class="obj-title">Base Profesional</div>
+      <div class="obj-desc">Sentar las bases para certificaciones como CompTIA Security+, CEH o CISSP.</div>
+    </div>
+  </div>
+
+  <!-- MÓDULOS -->
+  <div class="section-title">02 / Contenido del Curso</div>
+  <div class="modules reveal" style="animation-delay:0.2s">
+
+    <!-- M1 -->
+    <div class="module open" onclick="toggleModule(this)">
+      <div class="module-header">
+        <span class="module-num">M01</span>
+        <div class="module-info">
+          <div class="module-title">Introducción a la Ciberseguridad</div>
+          <div class="module-sub">// FUNDAMENTOS · 4 HORAS</div>
+        </div>
+        <div class="module-right">
+          <span class="module-duration">⏱ 4h</span>
+          <span class="module-tag tag-teoria">TEORÍA</span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-desc">Comprende el panorama actual de la ciberseguridad, su historia y por qué es una de las disciplinas más críticas del siglo XXI.</div>
+        <ul class="lessons">
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">¿Qué es la ciberseguridad? Definiciones y alcance</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Historia de los ciberataques más relevantes</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">La Tríada CIA: Confidencialidad, Integridad, Disponibilidad</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Tipos de actores: hackers, crackers, script kiddies, APTs</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Superficie de ataque y vectores de amenaza</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Quiz de evaluación inicial</span><span class="lesson-type">Evaluación</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- M2 -->
+    <div class="module" onclick="toggleModule(this)">
+      <div class="module-header">
+        <span class="module-num">M02</span>
+        <div class="module-info">
+          <div class="module-title">Redes e Internet: Cómo funciona todo</div>
+          <div class="module-sub">// NETWORKING BÁSICO · 6 HORAS</div>
+        </div>
+        <div class="module-right">
+          <span class="module-duration">⏱ 6h</span>
+          <span class="module-tag tag-teoria">TEORÍA</span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-desc">Las redes son el campo de batalla digital. Sin entender cómo fluye la información, no puedes protegerla.</div>
+        <ul class="lessons">
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Modelo OSI y TCP/IP explicado sin complicaciones</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Protocolos esenciales: HTTP/S, DNS, DHCP, FTP, SSH</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Direcciones IP, puertos y qué revelan sobre ti</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Wi-Fi: WEP, WPA, WPA2, WPA3 — diferencias críticas</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Firewalls, proxies y VPNs: qué hacen realmente</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Lab: Analizar tráfico con Wireshark (básico)</span><span class="lesson-type">Lab</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- M3 -->
+    <div class="module" onclick="toggleModule(this)">
+      <div class="module-header">
+        <span class="module-num">M03</span>
+        <div class="module-info">
+          <div class="module-title">Amenazas y Tipos de Ataques</div>
+          <div class="module-sub">// THREAT LANDSCAPE · 6 HORAS</div>
+        </div>
+        <div class="module-right">
+          <span class="module-duration">⏱ 6h</span>
+          <span class="module-tag tag-practica">PRÁCTICO</span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-desc">Conoce al enemigo. Aprende a reconocer los ataques más comunes antes de que te afecten.</div>
+        <ul class="lessons">
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Malware: virus, troyanos, ransomware, spyware, rootkits</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Phishing, spear phishing y smishing: reconocerlos al instante</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Ingeniería social: el hack humano más efectivo</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Ataques de contraseña: fuerza bruta, diccionario, credential stuffing</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">DoS y DDoS: cuando te saturan de tráfico</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Man-in-the-Middle (MitM): el espía invisible</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Lab: Simular e identificar un ataque de phishing</span><span class="lesson-type">Lab</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- M4 -->
+    <div class="module" onclick="toggleModule(this)">
+      <div class="module-header">
+        <span class="module-num">M04</span>
+        <div class="module-info">
+          <div class="module-title">Gestión de Identidad y Contraseñas</div>
+          <div class="module-sub">// IDENTITY SECURITY · 4 HORAS</div>
+        </div>
+        <div class="module-right">
+          <span class="module-duration">⏱ 4h</span>
+          <span class="module-tag tag-practica">PRÁCTICO</span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-desc">El 80% de las brechas de datos involucran credenciales débiles o robadas. Este módulo es de los más prácticos e inmediatos del curso.</div>
+        <ul class="lessons">
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Anatomía de una contraseña segura</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Gestores de contraseñas: Bitwarden, 1Password, KeePass</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Autenticación Multifactor (MFA/2FA): tipos y cómo configurarlo</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Passkeys y el futuro sin contraseñas</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Lab: Configurar MFA y un gestor de contraseñas</span><span class="lesson-type">Lab</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- M5 -->
+    <div class="module" onclick="toggleModule(this)">
+      <div class="module-header">
+        <span class="module-num">M05</span>
+        <div class="module-info">
+          <div class="module-title">Seguridad en Dispositivos y Sistemas</div>
+          <div class="module-sub">// ENDPOINT SECURITY · 5 HORAS</div>
+        </div>
+        <div class="module-right">
+          <span class="module-duration">⏱ 5h</span>
+          <span class="module-tag tag-practica">PRÁCTICO</span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-desc">Tu PC, smartphone y tablet son puertas de entrada para los atacantes. Aprende a cerrarlas correctamente.</div>
+        <ul class="lessons">
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Hardening de sistemas: qué es y cómo aplicarlo</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Actualizaciones de software: por qué son vitales</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Antivirus, EDR y diferencias clave</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Cifrado de disco: BitLocker, FileVault, LUKS</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Seguridad en smartphones: permisos, apps y privacidad</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Backups: regla 3-2-1 y herramientas</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Lab: Auditar y asegurar un sistema Windows/Linux</span><span class="lesson-type">Lab</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- M6 -->
+    <div class="module" onclick="toggleModule(this)">
+      <div class="module-header">
+        <span class="module-num">M06</span>
+        <div class="module-info">
+          <div class="module-title">Privacidad y Navegación Segura</div>
+          <div class="module-sub">// PRIVACY & WEB SECURITY · 5 HORAS</div>
+        </div>
+        <div class="module-right">
+          <span class="module-duration">⏱ 5h</span>
+          <span class="module-tag tag-lab">LAB</span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-desc">Cada clic deja rastros. Aprende a reducir tu huella digital y navegar con inteligencia en un ecosistema de vigilancia masiva.</div>
+        <ul class="lessons">
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Cómo te rastrean: cookies, fingerprinting, trackers</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">VPNs: mitos, realidades y cuándo usarlas</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Tor: cómo funciona y cuándo es apropiado</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">HTTPS, SSL/TLS y cómo verificar un sitio seguro</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Extensiones de seguridad: uBlock, Privacy Badger, HTTPS Everywhere</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Redes sociales y OSINT: lo que revelan sin querer</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Lab: Analizar tu huella digital actual</span><span class="lesson-type">Lab</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- M7 -->
+    <div class="module" onclick="toggleModule(this)">
+      <div class="module-header">
+        <span class="module-num">M07</span>
+        <div class="module-info">
+          <div class="module-title">Respuesta a Incidentes y Primeros Auxilios</div>
+          <div class="module-sub">// INCIDENT RESPONSE · 5 HORAS</div>
+        </div>
+        <div class="module-right">
+          <span class="module-duration">⏱ 5h</span>
+          <span class="module-tag tag-lab">LAB</span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-desc">¿Qué haces cuando te atacan? La respuesta a incidentes es la diferencia entre un susto y una catástrofe.</div>
+        <ul class="lessons">
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Ciclo de vida de un incidente de seguridad</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Señales de alerta: ¿cómo saber si te hackearon?</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Contención inmediata: qué hacer en los primeros 30 minutos</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Análisis básico de logs y registros del sistema</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Recuperación ante ransomware paso a paso</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Reporte de incidentes y comunicación en crisis</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Lab: Simulacro de respuesta a incidente en entorno virtual</span><span class="lesson-type">Lab</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- M8 -->
+    <div class="module" onclick="toggleModule(this)">
+      <div class="module-header">
+        <span class="module-num">M08</span>
+        <div class="module-info">
+          <div class="module-title">Marco Legal, Ético y Rutas Profesionales</div>
+          <div class="module-sub">// COMPLIANCE & CAREER · 5 HORAS</div>
+        </div>
+        <div class="module-right">
+          <span class="module-duration">⏱ 5h</span>
+          <span class="module-tag tag-teoria">TEORÍA</span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-desc">Entiende el ecosistema legal y ético, y descubre las múltiples rutas de carrera en el campo más demandado del mercado tecnológico.</div>
+        <ul class="lessons">
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Marco legal: GDPR, Habeas Data, delitos informáticos</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Ética hacker: el código no escrito del profesional</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Bug bounty programs: ganar dinero encontrando fallos</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Roles en ciberseguridad: SOC analyst, pentester, CISO, forense...</span><span class="lesson-type">Video</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Certificaciones recomendadas y rutas de aprendizaje</span><span class="lesson-type">Lectura</span></li>
+          <li class="lesson"><span class="lesson-dot"></span><span class="lesson-name">Proyecto final integrador: Auditoría básica de seguridad</span><span class="lesson-type">Lab</span></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HERRAMIENTAS -->
+  <div class="section-title">03 / Herramientas del Curso</div>
+  <div class="tools-section reveal" style="animation-delay:0.3s">
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon">🦈</div>
+        <div class="tool-name">Wireshark</div>
+        <div class="tool-desc">Análisis de redes</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🗺️</div>
+        <div class="tool-name">Nmap</div>
+        <div class="tool-desc">Escaneo de puertos</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🐉</div>
+        <div class="tool-name">Kali Linux</div>
+        <div class="tool-desc">Distro de seguridad</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🔐</div>
+        <div class="tool-name">Bitwarden</div>
+        <div class="tool-desc">Gestor contraseñas</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🌐</div>
+        <div class="tool-name">Tor Browser</div>
+        <div class="tool-desc">Navegación anónima</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">📡</div>
+        <div class="tool-name">Metasploit</div>
+        <div class="tool-desc">Framework de tests</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🔬</div>
+        <div class="tool-name">VirusTotal</div>
+        <div class="tool-desc">Análisis de malware</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🏴</div>
+        <div class="tool-name">Burp Suite</div>
+        <div class="tool-desc">Tests de aplicaciones web</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">📊</div>
+        <div class="tool-name">Splunk</div>
+        <div class="tool-desc">Análisis de logs</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🖥️</div>
+        <div class="tool-name">VirtualBox</div>
+        <div class="tool-desc">Máquinas virtuales</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🔒</div>
+        <div class="tool-name">VeraCrypt</div>
+        <div class="tool-desc">Cifrado de datos</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🕵️</div>
+        <div class="tool-name">Maltego</div>
+        <div class="tool-desc">Inteligencia OSINT</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVALUACIÓN -->
+  <div class="section-title">04 / Sistema de Evaluación</div>
+  <div class="eval-section reveal" style="animation-delay:0.35s">
+    <div class="eval-grid">
+      <div class="eval-card">
+        <div class="eval-pct">30%</div>
+        <div class="eval-name">Laboratorios Prácticos</div>
+        <div class="eval-desc">Labs guiados en entorno virtual con rúbrica de verificación</div>
+      </div>
+      <div class="eval-card">
+        <div class="eval-pct">25%</div>
+        <div class="eval-name">Quizzes por Módulo</div>
+        <div class="eval-desc">Test de 10-15 preguntas al finalizar cada módulo</div>
+      </div>
+      <div class="eval-card">
+        <div class="eval-pct">20%</div>
+        <div class="eval-name">Participación Activa</div>
+        <div class="eval-desc">Foros de discusión, resolución de casos y debates</div>
+      </div>
+      <div class="eval-card">
+        <div class="eval-pct">25%</div>
+        <div class="eval-name">Proyecto Final</div>
+        <div class="eval-desc">Auditoría básica de seguridad documentada y presentada</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--muted);">
+      <span style="color:var(--accent)">►</span> Nota mínima de aprobación: <strong style="color:#fff">70/100</strong> &nbsp;|&nbsp; <span style="color:var(--accent)">►</span> Intentos ilimitados en quizzes &nbsp;|&nbsp; <span style="color:var(--accent)">►</span> Acceso al material por <strong style="color:#fff">6 meses</strong>
+    </div>
+  </div>
+
+  <!-- PERFIL -->
+  <div class="section-title">05 / Perfil del Estudiante</div>
+  <div class="profile-section reveal" style="animation-delay:0.4s">
+    <div class="profile-row">
+      <div class="profile-box">
+        <h3>DIRIGIDO A</h3>
+        <ul class="profile-list">
+          <li>Estudiantes de tecnología e informática</li>
+          <li>Profesionales que migran a TI</li>
+          <li>Administradores de sistemas sin background en seguridad</li>
+          <li>Emprendedores que manejan datos de clientes</li>
+          <li>Curiosos con interés en ciberseguridad</li>
+          <li>Personal de RR.HH., finanzas y áreas críticas</li>
+        </ul>
+      </div>
+      <div class="profile-box">
+        <h3>PRERREQUISITOS</h3>
+        <ul class="profile-list">
+          <li>Manejo básico de computador y navegador</li>
+          <li>Cuenta de correo electrónico activa</li>
+          <li>Sin conocimientos previos de programación</li>
+          <li>Sin conocimientos previos de redes</li>
+          <li>Ganas de aprender y mentalidad analítica</li>
+          <li>Acceso a internet estable</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTIFICADO -->
+  <div class="cert-section reveal" style="animation-delay:0.45s">
+    <h2>CERTIFICADO DE COMPLETACIÓN</h2>
+    <p>Al superar el 70% de calificación total, recibirás un certificado digital verificable que avala tus conocimientos en fundamentos de ciberseguridad.</p>
+    <div class="cert-badge">🔐 OBTENER CERTIFICADO AL COMPLETAR</div>
+    <div style="margin-top:20px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);">
+      Compatible con perfiles de LinkedIn · Verificación por código QR · Expedido en PDF
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div>CiberSec 101 © 2025 — Nivel Básico Inicial</div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);">
+    root@cybersec:~$ <span class="terminal-text">_</span>
+  </div>
+</footer>
+
+<script>
+  function toggleModule(el) {
+    el.classList.toggle('open');
+  }
+
+  // Animate progress bar
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('mainProgress').style.width = '0%';
+    }, 500);
+  });
+
+  // Intersection Observer for reveals
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => {
+    el.style.animationPlayState = 'paused';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

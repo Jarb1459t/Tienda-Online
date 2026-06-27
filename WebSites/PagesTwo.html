@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora Android con Teclado</title>
+  <style>
+    body {
+      background-color: #202124;
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .calculator {
+      background-color: #303134;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      width: 320px;
+    }
+
+    .display {
+      background-color: #171717;
+      color: #fff;
+      font-size: 36px;
+      text-align: right;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      min-height: 60px;
+      word-wrap: break-word;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 20px;
+      font-size: 22px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      background-color: #3c4043;
+      color: white;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #5f6368;
+    }
+
+    .operator {
+      background-color: #f57c00;
+      color: white;
+    }
+
+    .operator:hover {
+      background-color: #fb8c00;
+    }
+
+    .equal {
+      background-color: #00c853;
+      color: white;
+    }
+
+    .equal:hover {
+      background-color: #00e676;
+    }
+
+    .zero {
+      grid-column: span 2;
+      border-radius: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+      <button class="btn" onclick="clearDisplay()">C</button>
+      <button class="btn" onclick="deleteLast()">⌫</button>
+      <button class="btn operator" onclick="appendOperator('/')">÷</button>
+      <button class="btn operator" onclick="appendOperator('*')">×</button>
+
+      <button class="btn" onclick="appendNumber('7')">7</button>
+      <button class="btn" onclick="appendNumber('8')">8</button>
+      <button class="btn" onclick="appendNumber('9')">9</button>
+      <button class="btn operator" onclick="appendOperator('-')">−</button>
+
+      <button class="btn" onclick="appendNumber('4')">4</button>
+      <button class="btn" onclick="appendNumber('5')">5</button>
+      <button class="btn" onclick="appendNumber('6')">6</button>
+      <button class="btn operator" onclick="appendOperator('+')">+</button>
+
+      <button class="btn" onclick="appendNumber('1')">1</button>
+      <button class="btn" onclick="appendNumber('2')">2</button>
+      <button class="btn" onclick="appendNumber('3')">3</button>
+      <button class="btn equal" onclick="calculate()">=</button>
+
+      <button class="btn zero" onclick="appendNumber('0')">0</button>
+      <button class="btn" onclick="appendNumber('.')">.</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+
+    function appendNumber(num) {
+      if (display.innerText === '0' || display.innerText === 'Error') {
+        display.innerText = num;
+      } else {
+        display.innerText += num;
+      }
+    }
+
+    function appendOperator(op) {
+      const lastChar = display.innerText.slice(-1);
+      if ("+-*/".includes(lastChar)) {
+        display.innerText = display.innerText.slice(0, -1) + op;
+      } else {
+        display.innerText += op;
+      }
+    }
+
+    function clearDisplay() {
+      display.innerText = '0';
+    }
+
+    function deleteLast() {
+      if (display.innerText.length > 1) {
+        display.innerText = display.innerText.slice(0, -1);
+      } else {
+        display.innerText = '0';
+      }
+    }
+
+    function calculate() {
+      try {
+        const result = eval(display.innerText);
+        display.innerText = result;
+      } catch {
+        display.innerText = 'Error';
+      }
+    }
+
+    // Manejador de teclado
+    document.addEventListener('keydown', (event) => {
+      const key = event.key;
+
+      if (!isNaN(key)) {
+        appendNumber(key);
+      } else if (['+', '-', '*', '/'].includes(key)) {
+        appendOperator(key);
+      } else if (key === 'Enter' || key === '=') {
+        event.preventDefault();
+        calculate();
+      } else if (key === 'Backspace') {
+        deleteLast();
+      } else if (key.toLowerCase() === 'c') {
+        clearDisplay();
+      } else if (key === '.') {
+        appendNumber('.');
+      }
+    });
+  </script>
+
+</body>
+</html>

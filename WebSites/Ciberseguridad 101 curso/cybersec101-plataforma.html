@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CiberSec 101 — Plataforma Completa</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050a0e;
+  --surface: #0a141c;
+  --surface2: #0d1a24;
+  --border: #0f2535;
+  --border2: #1a3548;
+  --accent: #00f5c4;
+  --accent2: #ff3c6e;
+  --accent3: #f5a623;
+  --accent4: #a78bfa;
+  --text: #c8dce8;
+  --muted: #4a6477;
+  --glow: 0 0 20px rgba(0,245,196,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:15px;display:flex;flex-direction:column;}
+
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,245,196,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,196,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+/* ── TOP BAR ── */
+.topbar{position:relative;z-index:100;display:flex;align-items:center;gap:0;background:var(--surface);border-bottom:1px solid var(--border2);height:52px;flex-shrink:0;}
+.logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#fff;padding:0 24px;border-right:1px solid var(--border2);height:100%;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.logo span{color:var(--accent);text-shadow:0 0 12px rgba(0,245,196,0.5);}
+.nav-tabs{display:flex;height:100%;}
+.nav-tab{height:100%;padding:0 22px;display:flex;align-items:center;gap:8px;font-size:13px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;border-right:1px solid var(--border);}
+.nav-tab:hover{color:var(--text);background:rgba(0,245,196,0.03);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,245,196,0.05);}
+.nav-tab .tab-icon{font-size:15px;}
+.topbar-right{margin-left:auto;padding:0 20px;display:flex;align-items:center;gap:14px;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);animation:pulse-dot 2s infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.status-text{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);}
+
+/* ── LAYOUT ── */
+.app-body{display:flex;flex:1;overflow:hidden;position:relative;z-index:10;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:260px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border2);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-header{padding:16px 18px;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:2px;display:flex;align-items:center;justify-content:space-between;}
+.sidebar-body{flex:1;overflow-y:auto;padding:8px 0;}
+.sidebar-body::-webkit-scrollbar{width:4px;}
+.sidebar-body::-webkit-scrollbar-thumb{background:var(--border2);}
+
+/* Module tree */
+.module-item{padding:10px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.2s;border-left:3px solid transparent;}
+.module-item:hover{background:rgba(0,245,196,0.04);}
+.module-item.active{background:rgba(0,245,196,0.07);border-left-color:var(--accent);}
+.module-item.active .mod-num{color:var(--accent);}
+.mod-num{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);min-width:28px;}
+.mod-info{flex:1;min-width:0;}
+.mod-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mod-count{font-size:11px;color:var(--muted);font-family:'Share Tech Mono',monospace;margin-top:1px;}
+.mod-badge{font-size:10px;padding:2px 6px;border-radius:0;font-family:'Share Tech Mono',monospace;}
+
+/* sidebar section */
+.sidebar-section{padding:6px 18px 4px;font-size:10px;color:var(--muted);font-family:'Share Tech Mono',monospace;letter-spacing:2px;text-transform:uppercase;margin-top:8px;}
+
+/* ── MAIN CONTENT ── */
+.main-content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ── PANELS ── */
+.panel{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.panel.active{display:flex;}
+
+/* ── COURSE PANEL ── */
+.course-scroll{flex:1;overflow-y:auto;padding:40px;}
+.course-scroll::-webkit-scrollbar{width:4px;}
+.course-scroll::-webkit-scrollbar-thumb{background:var(--border2);}
+
+/* ── DOCS PANEL ── */
+.docs-layout{display:flex;flex:1;overflow:hidden;}
+.docs-list-pane{width:340px;flex-shrink:0;border-right:1px solid var(--border2);display:flex;flex-direction:column;overflow:hidden;}
+.docs-toolbar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.docs-search{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:12px;padding:6px 12px;outline:none;transition:border-color 0.2s;}
+.docs-search:focus{border-color:var(--accent);}
+.btn{padding:7px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;border:1px solid;transition:all 0.2s;background:transparent;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.btn-primary{color:var(--accent);border-color:var(--accent);}
+.btn-primary:hover{background:rgba(0,245,196,0.1);box-shadow:var(--glow);}
+.btn-danger{color:var(--accent2);border-color:var(--accent2);}
+.btn-danger:hover{background:rgba(255,60,110,0.1);}
+.btn-purple{color:var(--accent4);border-color:var(--accent4);}
+.btn-purple:hover{background:rgba(167,139,250,0.1);}
+.btn-muted{color:var(--muted);border-color:var(--border2);}
+.btn-muted:hover{color:var(--text);border-color:var(--muted);}
+
+.docs-list{flex:1;overflow-y:auto;padding:8px;}
+.docs-list::-webkit-scrollbar{width:3px;}
+.docs-list::-webkit-scrollbar-thumb{background:var(--border2);}
+.doc-card{background:var(--surface2);border:1px solid var(--border);padding:14px 16px;margin-bottom:6px;cursor:pointer;transition:all 0.2s;position:relative;}
+.doc-card:hover{border-color:var(--border2);background:var(--surface);}
+.doc-card.selected{border-color:rgba(0,245,196,0.4);background:rgba(0,245,196,0.04);}
+.doc-card-top{display:flex;align-items:flex-start;gap:10px;}
+.doc-type-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.doc-card-info{flex:1;min-width:0;}
+.doc-card-name{font-size:14px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.doc-card-meta{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;}
+.doc-card-module{display:inline-block;font-size:10px;padding:2px 8px;border:1px solid var(--border2);color:var(--muted);font-family:'Share Tech Mono',monospace;margin-top:6px;letter-spacing:1px;}
+.doc-card-actions{display:flex;gap:4px;margin-top:8px;}
+.doc-status{position:absolute;top:10px;right:10px;width:6px;height:6px;border-radius:50%;}
+.doc-status.ready{background:var(--accent);box-shadow:0 0 4px var(--accent);}
+.doc-status.processing{background:var(--accent3);animation:pulse-dot 1s infinite;}
+.doc-status.error{background:var(--accent2);}
+
+.empty-docs{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted);padding:40px;}
+.empty-docs .big-icon{font-size:48px;opacity:0.3;}
+.empty-docs p{font-family:'Share Tech Mono',monospace;font-size:12px;text-align:center;line-height:1.8;}
+
+/* Doc viewer */
+.doc-viewer{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.doc-viewer-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.doc-viewer-title{font-size:17px;font-weight:700;color:#fff;flex:1;}
+.doc-viewer-body{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.doc-viewer-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--muted);}
+.doc-viewer-empty .icon{font-size:56px;opacity:0.15;}
+
+/* AI Chat in viewer */
+.ai-chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.ai-messages{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px;}
+.ai-messages::-webkit-scrollbar{width:3px;}
+.ai-messages::-webkit-scrollbar-thumb{background:var(--border2);}
+.msg{display:flex;gap:12px;align-items:flex-start;}
+.msg-avatar{width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid var(--border2);}
+.msg-avatar.user-av{background:rgba(0,245,196,0.1);border-color:rgba(0,245,196,0.3);}
+.msg-avatar.ai-av{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.3);}
+.msg-body{flex:1;}
+.msg-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:1px;}
+.msg-text{font-size:14px;color:var(--text);line-height:1.7;background:var(--surface2);border:1px solid var(--border);padding:12px 14px;}
+.msg-text.ai-msg{border-color:rgba(167,139,250,0.2);}
+.msg-text.user-msg{border-color:rgba(0,245,196,0.2);}
+.msg-text pre{font-family:'Share Tech Mono',monospace;font-size:12px;background:var(--bg);padding:10px;margin-top:8px;overflow-x:auto;border-left:2px solid var(--accent);}
+.ai-input-row{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
+.ai-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;padding:9px 14px;outline:none;resize:none;transition:border-color 0.2s;height:42px;min-height:42px;}
+.ai-input:focus{border-color:var(--accent);}
+
+/* Doc info panel */
+.doc-info{padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.doc-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.info-item label{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:3px;}
+.info-item value{font-size:13px;color:var(--text);}
+.ai-summary-box{background:var(--bg);border:1px solid rgba(0,245,196,0.15);border-left:2px solid var(--accent);padding:12px 14px;font-size:13px;color:var(--text);line-height:1.6;}
+.ai-summary-box.loading{color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:12px;}
+
+/* ── UPLOAD MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Orbitron',sans-serif;font-size:14px;color:var(--accent);letter-spacing:2px;}
+.modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:var(--accent2);}
+.modal-body{padding:24px;}
+.drop-zone{border:2px dashed var(--border2);padding:40px 24px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;}
+.drop-zone.dragover{border-color:var(--accent);background:rgba(0,245,196,0.04);}
+.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.drop-icon{font-size:40px;margin-bottom:12px;}
+.drop-text{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);line-height:1.8;}
+.drop-text strong{color:var(--text);}
+.form-row{margin-top:16px;}
+.form-label{display:block;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:1px;margin-bottom:6px;}
+.form-select,.form-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;padding:9px 12px;outline:none;transition:border-color 0.2s;}
+.form-select:focus,.form-input:focus{border-color:var(--accent);}
+.form-select option{background:var(--surface);}
+.upload-preview{margin-top:14px;padding:12px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.upload-preview-icon{font-size:24px;}
+.upload-preview-info{flex:1;min-width:0;}
+.upload-preview-name{font-size:13px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.upload-preview-size{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px;}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
+
+/* ── DASHBOARD PANEL ── */
+.dashboard-scroll{flex:1;overflow-y:auto;padding:32px 40px;}
+.dashboard-scroll::-webkit-scrollbar{width:4px;}
+.dashboard-scroll::-webkit-scrollbar-thumb{background:var(--border2);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:var(--surface);border:1px solid var(--border);padding:22px 20px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:var(--accent);}
+.stat-card.orange::before{background:var(--accent3);}
+.stat-card.red::before{background:var(--accent2);}
+.stat-card.purple::before{background:var(--accent4);}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:#fff;line-height:1;}
+.stat-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px;letter-spacing:1px;}
+.stat-sub{font-size:12px;color:var(--accent);margin-top:4px;}
+
+.section-hd{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.section-hd::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* Module progress */
+.module-progress-list{display:flex;flex-direction:column;gap:8px;margin-bottom:32px;}
+.mp-item{background:var(--surface);border:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:16px;}
+.mp-num{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);min-width:32px;}
+.mp-name{flex:1;font-size:14px;font-weight:600;color:var(--text);}
+.mp-docs{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
+.mp-bar-wrap{width:120px;height:4px;background:var(--border2);}
+.mp-bar{height:100%;background:var(--accent);transition:width 0.8s ease;}
+
+/* Recent activity */
+.activity-list{display:flex;flex-direction:column;gap:6px;}
+.activity-item{background:var(--surface);border:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;font-size:13px;}
+.activity-icon{font-size:16px;flex-shrink:0;}
+.activity-text{flex:1;color:var(--text);}
+.activity-time{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);}
+
+/* ── COURSE CONTENT STYLES ── */
+.c-header{margin-bottom:40px;}
+.c-badge{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);border:1px solid var(--accent);padding:3px 10px;letter-spacing:2px;display:inline-block;margin-bottom:12px;}
+.c-title{font-family:'Orbitron',sans-serif;font-size:clamp(28px,4vw,56px);font-weight:900;color:#fff;line-height:1;}
+.c-title span{color:var(--accent);text-shadow:0 0 24px rgba(0,245,196,0.5);}
+.c-sub{font-size:20px;color:var(--muted);margin-top:6px;font-weight:500;}
+.c-meta{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px;}
+.c-meta-item{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);}
+.c-meta-item strong{color:var(--text);}
+
+.c-section{margin-bottom:48px;}
+.c-section-title{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--accent);letter-spacing:4px;margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.c-section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.obj-c{background:var(--surface);border:1px solid var(--border);padding:20px;border-left:3px solid var(--accent);transition:transform 0.2s;}
+.obj-c:hover{transform:translateY(-2px);}
+.obj-c .icon{font-size:26px;margin-bottom:10px;}
+.obj-c .title{font-weight:700;font-size:14px;color:#fff;margin-bottom:5px;}
+.obj-c .desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+.modules-list{display:flex;flex-direction:column;gap:4px;}
+.mod-block{background:var(--surface);border:1px solid var(--border);overflow:hidden;transition:border-color 0.2s;}
+.mod-block:hover{border-color:rgba(0,245,196,0.2);}
+.mod-block-header{display:flex;align-items:center;gap:16px;padding:18px 22px;cursor:pointer;}
+.mbh-num{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);min-width:28px;}
+.mbh-info{flex:1;}
+.mbh-title{font-size:17px;font-weight:700;color:#fff;}
+.mbh-sub{font-size:11px;color:var(--muted);font-family:'Share Tech Mono',monospace;margin-top:2px;}
+.mbh-right{display:flex;align-items:center;gap:12px;}
+.mbh-dur{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent3);}
+.mod-tag{font-size:10px;padding:2px 8px;border:1px solid;font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
+.tag-t{color:#64b5f6;border-color:#64b5f6;}
+.tag-p{color:var(--accent2);border-color:var(--accent2);}
+.tag-l{color:var(--accent);border-color:var(--accent);}
+.mbh-chevron{color:var(--muted);font-size:16px;transition:transform 0.3s;}
+.mod-block.open .mbh-chevron{transform:rotate(90deg);}
+.mod-block-body{display:none;padding:0 22px 22px;border-top:1px solid var(--border);}
+.mod-block.open .mod-block-body{display:block;}
+.mod-block-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-top:14px;padding:12px 14px;background:rgba(0,245,196,0.03);border-left:2px solid var(--accent);}
+.lessons-ul{list-style:none;margin-top:16px;}
+.lesson-li{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid rgba(15,37,53,0.7);font-size:13px;}
+.lesson-li:last-child{border-bottom:none;}
+.l-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:7px;flex-shrink:0;box-shadow:0 0 4px var(--accent);}
+.l-name{flex:1;color:var(--text);}
+.l-type{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);}
+.mod-doc-list{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.mod-doc-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent4);letter-spacing:1px;margin-bottom:8px;}
+.mod-doc-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(167,139,250,0.05);border:1px solid rgba(167,139,250,0.15);margin-bottom:4px;font-size:12px;cursor:pointer;}
+.mod-doc-item:hover{background:rgba(167,139,250,0.1);}
+.mod-doc-item-name{flex:1;color:var(--text);}
+.mod-doc-item-size{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);}
+
+/* tools */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.tool-c{background:var(--surface);border:1px solid var(--border);padding:16px;text-align:center;transition:all 0.2s;}
+.tool-c:hover{border-color:rgba(0,245,196,0.3);transform:translateY(-2px);}
+.tool-c .ti{font-size:28px;margin-bottom:8px;}
+.tool-c .tn{font-weight:700;font-size:13px;color:#fff;margin-bottom:3px;}
+.tool-c .td{font-size:11px;color:var(--muted);font-family:'Share Tech Mono',monospace;}
+
+/* eval */
+.eval-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+.eval-c{background:var(--surface);border:1px solid var(--border);padding:24px 20px;text-align:center;}
+.eval-pct{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:var(--accent);line-height:1;}
+.eval-name{font-weight:700;color:#fff;margin:8px 0 4px;font-size:14px;}
+.eval-desc{font-size:12px;color:var(--muted);}
+
+/* cert */
+.cert-box{background:linear-gradient(135deg,rgba(0,245,196,0.05),rgba(255,60,110,0.03));border:1px solid rgba(0,245,196,0.2);padding:36px;text-align:center;position:relative;overflow:hidden;}
+.cert-box::before{content:'🔐';position:absolute;font-size:180px;opacity:0.03;top:50%;left:50%;transform:translate(-50%,-50%);}
+.cert-box h2{font-family:'Orbitron',sans-serif;font-size:20px;color:#fff;margin-bottom:10px;}
+.cert-box p{color:var(--muted);font-size:13px;max-width:440px;margin:0 auto 20px;}
+.cert-btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#000;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;padding:12px 28px;letter-spacing:2px;}
+
+/* toast */
+.toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--surface);border:1px solid var(--accent);padding:12px 18px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--accent);max-width:320px;transform:translateY(100px);opacity:0;transition:all 0.3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.error{border-color:var(--accent2);color:var(--accent2);}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:0;}
+
+/* typing indicator */
+.typing{display:flex;gap:4px;align-items:center;padding:8px 12px;}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--accent4);animation:typing-dot 1.4s infinite;}
+.typing span:nth-child(2){animation-delay:0.2s;}
+.typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes typing-dot{0%,60%,100%{opacity:0.2;transform:scale(1);}30%{opacity:1;transform:scale(1.2);}}
+
+/* File type colors */
+.ftype-pdf{color:#ff6b6b;}
+.ftype-img{color:#51cf66;}
+.ftype-txt{color:#74c0fc;}
+.ftype-doc{color:#748ffc;}
+.ftype-other{color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">CIBER<span>SEC</span> 101</div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="switchTab('course')" id="tab-course">
+      <span class="tab-icon">📚</span> CURSO
+    </div>
+    <div class="nav-tab" onclick="switchTab('docs')" id="tab-docs">
+      <span class="tab-icon">📁</span> DOCUMENTOS
+    </div>
+    <div class="nav-tab" onclick="switchTab('dashboard')" id="tab-dashboard">
+      <span class="tab-icon">📊</span> PANEL
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="status-dot"></div>
+    <span class="status-text" id="storageStatus">BACKEND ACTIVO</span>
+  </div>
+</div>
+
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span>MÓDULOS</span>
+      <span id="sidebarDocCount" style="color:var(--text)">0 docs</span>
+    </div>
+    <div class="sidebar-body" id="sidebarBody">
+      <div class="sidebar-section">FILTRAR POR MÓDULO</div>
+      <div class="module-item active" onclick="filterByModule('all')" id="smod-all">
+        <span class="mod-num">ALL</span>
+        <div class="mod-info">
+          <div class="mod-name">Todos los documentos</div>
+          <div class="mod-count" id="smod-all-count">0 archivos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- ═══ COURSE PANEL ═══ -->
+    <div class="panel active" id="panel-course">
+      <div class="course-scroll">
+
+        <div class="c-header">
+          <div class="c-badge">NIVEL BÁSICO — 2025</div>
+          <div class="c-title">CIBER<span>SEC</span> 101</div>
+          <div class="c-sub">Fundamentos de Ciberseguridad</div>
+          <div class="c-meta">
+            <div class="c-meta-item">⏱ Duración: <strong>40 horas</strong></div>
+            <div class="c-meta-item">📚 Módulos: <strong>8</strong></div>
+            <div class="c-meta-item">💻 Modalidad: <strong>Teórico-Práctica</strong></div>
+            <div class="c-meta-item">🏆 <strong>Certificado al completar</strong></div>
+          </div>
+        </div>
+
+        <!-- OBJETIVOS -->
+        <div class="c-section">
+          <div class="c-section-title">01 / OBJETIVOS DEL CURSO</div>
+          <div class="obj-grid">
+            <div class="obj-c"><div class="icon">🛡️</div><div class="title">Defensa Personal Digital</div><div class="desc">Identificar y neutralizar amenazas cotidianas en internet.</div></div>
+            <div class="obj-c"><div class="icon">🔍</div><div class="title">Pensamiento Analítico</div><div class="desc">Detectar phishing, malware y fraudes en tiempo real.</div></div>
+            <div class="obj-c"><div class="icon">🔑</div><div class="title">Gestión de Accesos</div><div class="desc">Contraseñas seguras, MFA y privacidad en línea.</div></div>
+            <div class="obj-c"><div class="icon">🌐</div><div class="title">Redes Seguras</div><div class="desc">Entender vulnerabilidades y navegar con seguridad.</div></div>
+            <div class="obj-c"><div class="icon">⚖️</div><div class="title">Marco Legal y Ético</div><div class="desc">Normativas vigentes y ética en ciberseguridad.</div></div>
+            <div class="obj-c"><div class="icon">🚀</div><div class="title">Base Profesional</div><div class="desc">Fundamentos para Security+, CEH o CISSP.</div></div>
+          </div>
+        </div>
+
+        <!-- MÓDULOS -->
+        <div class="c-section">
+          <div class="c-section-title">02 / CONTENIDO DEL CURSO</div>
+          <div class="modules-list" id="courseModules"></div>
+        </div>
+
+        <!-- HERRAMIENTAS -->
+        <div class="c-section">
+          <div class="c-section-title">03 / HERRAMIENTAS</div>
+          <div class="tools-grid">
+            <div class="tool-c"><div class="ti">🦈</div><div class="tn">Wireshark</div><div class="td">Redes</div></div>
+            <div class="tool-c"><div class="ti">🗺️</div><div class="tn">Nmap</div><div class="td">Escaneo</div></div>
+            <div class="tool-c"><div class="ti">🐉</div><div class="tn">Kali Linux</div><div class="td">Pentesting</div></div>
+            <div class="tool-c"><div class="ti">🔐</div><div class="tn">Bitwarden</div><div class="td">Contraseñas</div></div>
+            <div class="tool-c"><div class="ti">🌐</div><div class="tn">Tor Browser</div><div class="td">Privacidad</div></div>
+            <div class="tool-c"><div class="ti">📡</div><div class="tn">Metasploit</div><div class="td">Framework</div></div>
+            <div class="tool-c"><div class="ti">🔬</div><div class="tn">VirusTotal</div><div class="td">Malware</div></div>
+            <div class="tool-c"><div class="ti">🏴</div><div class="tn">Burp Suite</div><div class="td">Web Tests</div></div>
+            <div class="tool-c"><div class="ti">📊</div><div class="tn">Splunk</div><div class="td">Logs</div></div>
+            <div class="tool-c"><div class="ti">🖥️</div><div class="tn">VirtualBox</div><div class="td">VMs</div></div>
+            <div class="tool-c"><div class="ti">🔒</div><div class="tn">VeraCrypt</div><div class="td">Cifrado</div></div>
+            <div class="tool-c"><div class="ti">🕵️</div><div class="tn">Maltego</div><div class="td">OSINT</div></div>
+          </div>
+        </div>
+
+        <!-- EVALUACIÓN -->
+        <div class="c-section">
+          <div class="c-section-title">04 / EVALUACIÓN</div>
+          <div class="eval-grid">
+            <div class="eval-c"><div class="eval-pct">30%</div><div class="eval-name">Laboratorios</div><div class="eval-desc">Labs guiados con rúbrica</div></div>
+            <div class="eval-c"><div class="eval-pct">25%</div><div class="eval-name">Quizzes</div><div class="eval-desc">10-15 preguntas por módulo</div></div>
+            <div class="eval-c"><div class="eval-pct">20%</div><div class="eval-name">Participación</div><div class="eval-desc">Foros y casos prácticos</div></div>
+            <div class="eval-c"><div class="eval-pct">25%</div><div class="eval-name">Proyecto Final</div><div class="eval-desc">Auditoría de seguridad</div></div>
+          </div>
+        </div>
+
+        <!-- CERTIFICADO -->
+        <div class="c-section">
+          <div class="cert-box">
+            <h2>CERTIFICADO DE COMPLETACIÓN</h2>
+            <p>Supera el 70% de calificación para obtener tu certificado digital verificable con código QR.</p>
+            <div class="cert-btn">🔐 OBTENER CERTIFICADO</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ DOCUMENTS PANEL ═══ -->
+    <div class="panel" id="panel-docs">
+      <div class="docs-layout">
+
+        <!-- Document List -->
+        <div class="docs-list-pane">
+          <div class="docs-toolbar">
+            <input class="docs-search" id="docsSearch" placeholder="Buscar documentos..." oninput="filterDocs()" />
+            <button class="btn btn-primary" onclick="openUploadModal()">+ SUBIR</button>
+          </div>
+          <div class="docs-list" id="docsList"></div>
+        </div>
+
+        <!-- Document Viewer -->
+        <div class="doc-viewer" id="docViewer">
+          <div class="doc-viewer-empty" id="viewerEmpty">
+            <div class="icon">📄</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);text-align:center;line-height:2;">
+              Selecciona un documento<br>para verlo y analizarlo con IA
+            </div>
+          </div>
+          <div id="viewerContent" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+            <div class="doc-viewer-header">
+              <div class="doc-type-icon" id="viewerIcon">📄</div>
+              <div class="doc-viewer-title" id="viewerTitle">—</div>
+              <button class="btn btn-purple" onclick="askAI_init()" id="btnAskAI" style="display:none;">🤖 ANALIZAR CON IA</button>
+              <button class="btn btn-danger" onclick="deleteCurrentDoc()">🗑 ELIMINAR</button>
+            </div>
+            <div class="doc-info" id="docInfoPanel">
+              <div class="doc-info-grid" id="docInfoGrid"></div>
+              <div style="margin-bottom:8px;">
+                <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent4);letter-spacing:1px;margin-bottom:6px;">✦ RESUMEN IA</div>
+                <div class="ai-summary-box" id="docSummaryBox">—</div>
+              </div>
+            </div>
+            <div class="ai-chat-area">
+              <div class="ai-messages" id="aiMessages"></div>
+              <div class="ai-input-row">
+                <textarea class="ai-input" id="aiInput" placeholder="Pregunta sobre este documento... (Enter para enviar)" onkeydown="handleAiKey(event)"></textarea>
+                <button class="btn btn-purple" onclick="sendAiMessage()" id="btnSend">ENVIAR</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ DASHBOARD PANEL ═══ -->
+    <div class="panel" id="panel-dashboard">
+      <div class="dashboard-scroll">
+
+        <div style="margin-bottom:32px;">
+          <div class="c-section-title" style="font-family:'Orbitron',sans-serif;font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:4px;">PANEL DE CONTROL</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);">// Gestión del curso CiberSec 101 — Backend activo</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card"><div class="stat-num" id="statDocs">0</div><div class="stat-label">DOCUMENTOS</div><div class="stat-sub">Archivos cargados</div></div>
+          <div class="stat-card orange"><div class="stat-num" id="statModsCovered">0</div><div class="stat-label">MÓDULOS CON DOCS</div><div class="stat-sub">de 8 módulos</div></div>
+          <div class="stat-card red"><div class="stat-num" id="statStorage">0KB</div><div class="stat-label">ALMACENAMIENTO</div><div class="stat-sub">Usado</div></div>
+          <div class="stat-card purple"><div class="stat-num" id="statAiQueries">0</div><div class="stat-label">CONSULTAS IA</div><div class="stat-sub">Total realizadas</div></div>
+        </div>
+
+        <!-- Module progress -->
+        <div class="section-hd">DOCUMENTOS POR MÓDULO</div>
+        <div class="module-progress-list" id="moduleProgressList"></div>
+
+        <!-- Activity -->
+        <div class="section-hd">ACTIVIDAD RECIENTE</div>
+        <div class="activity-list" id="activityList">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);padding:20px;text-align:center;">Sin actividad registrada</div>
+        </div>
+
+        <!-- Actions -->
+        <div class="section-hd" style="margin-top:32px;">ACCIONES DEL BACKEND</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="exportAll()">📦 EXPORTAR ÍNDICE</button>
+          <button class="btn btn-purple" onclick="generateReport()">🤖 REPORTE IA</button>
+          <button class="btn btn-danger" onclick="clearAllDocs()">🗑 LIMPIAR BD</button>
+        </div>
+        <div id="reportBox" style="display:none;margin-top:16px;background:var(--surface);border:1px solid rgba(167,139,250,0.2);border-left:2px solid var(--accent4);padding:16px;font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;font-family:'Share Tech Mono',monospace;font-size:12px;"></div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">SUBIR DOCUMENTO</div>
+      <button class="modal-close" onclick="closeUploadModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept=".pdf,.txt,.md,.png,.jpg,.jpeg,.doc,.docx,.csv" onchange="handleFileSelect(event)" />
+        <div class="drop-icon">📂</div>
+        <div class="drop-text">
+          <strong>Arrastra un archivo aquí</strong><br>
+          o haz clic para seleccionar<br>
+          PDF · TXT · MD · DOCX · PNG · JPG · CSV
+        </div>
+      </div>
+      <div class="upload-preview" id="uploadPreview" style="display:none;">
+        <div class="upload-preview-icon" id="prevIcon">📄</div>
+        <div class="upload-preview-info">
+          <div class="upload-preview-name" id="prevName">—</div>
+          <div class="upload-preview-size" id="prevSize">—</div>
+        </div>
+        <button class="btn btn-danger" onclick="clearFileSelect()" style="padding:4px 8px;">✕</button>
+      </div>
+      <div class="form-row">
+        <label class="form-label">MÓDULO DEL CURSO</label>
+        <select class="form-select" id="uploadModule">
+          <option value="general">Sin módulo específico</option>
+          <option value="m01">M01 — Introducción a la Ciberseguridad</option>
+          <option value="m02">M02 — Redes e Internet</option>
+          <option value="m03">M03 — Amenazas y Tipos de Ataques</option>
+          <option value="m04">M04 — Gestión de Identidad y Contraseñas</option>
+          <option value="m05">M05 — Seguridad en Dispositivos</option>
+          <option value="m06">M06 — Privacidad y Navegación Segura</option>
+          <option value="m07">M07 — Respuesta a Incidentes</option>
+          <option value="m08">M08 — Marco Legal y Rutas Profesionales</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">DESCRIPCIÓN (opcional)</label>
+        <input class="form-input" id="uploadDesc" type="text" placeholder="Ej: Apuntes del laboratorio, Lectura adicional..." />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-muted" onclick="closeUploadModal()">CANCELAR</button>
+      <button class="btn btn-primary" onclick="uploadDocument()" id="btnUpload" disabled>⬆ SUBIR Y ANALIZAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  BACKEND DE DATOS — Storage API (Persistente)
+// ═══════════════════════════════════════════════════════
+
+const DB = {
+  async getDocList() {
+    try {
+      const r = await window.storage.get('docs:list');
+      return r ? JSON.parse(r.value) : [];
+    } catch { return []; }
+  },
+  async saveDocList(list) {
+    await window.storage.set('docs:list', JSON.stringify(list));
+  },
+  async getDoc(id) {
+    try {
+      const r = await window.storage.get('docs:' + id);
+      return r ? JSON.parse(r.value) : null;
+    } catch { return null; }
+  },
+  async saveDoc(id, data) {
+    await window.storage.set('docs:' + id, JSON.stringify(data));
+  },
+  async deleteDoc(id) {
+    try { await window.storage.delete('docs:' + id); } catch {}
+  },
+  async getStats() {
+    try {
+      const r = await window.storage.get('meta:stats');
+      return r ? JSON.parse(r.value) : { aiQueries: 0 };
+    } catch { return { aiQueries: 0 }; }
+  },
+  async saveStats(s) {
+    await window.storage.set('meta:stats', JSON.stringify(s));
+  },
+  async getActivity() {
+    try {
+      const r = await window.storage.get('meta:activity');
+      return r ? JSON.parse(r.value) : [];
+    } catch { return []; }
+  },
+  async addActivity(icon, text) {
+    const list = await this.getActivity();
+    list.unshift({ icon, text, time: new Date().toLocaleString('es-CO', { hour12: false }) });
+    if (list.length > 20) list.splice(20);
+    await window.storage.set('meta:activity', JSON.stringify(list));
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+//  MÓDULOS DEL CURSO
+// ═══════════════════════════════════════════════════════
+
+const MODULES = [
+  { id:'m01', num:'M01', title:'Introducción a la Ciberseguridad', sub:'FUNDAMENTOS · 4H', tag:'TEORÍA', tagCls:'tag-t', dur:'4h',
+    desc:'Comprende el panorama actual de la ciberseguridad, su historia y por qué es la disciplina más crítica del siglo XXI.',
+    lessons:[
+      ['¿Qué es la ciberseguridad? Definiciones y alcance','Lectura'],
+      ['Historia de los ciberataques más relevantes','Video'],
+      ['La Tríada CIA: Confidencialidad, Integridad, Disponibilidad','Lectura'],
+      ['Tipos de actores: hackers, crackers, APTs','Lectura'],
+      ['Superficie de ataque y vectores de amenaza','Video'],
+      ['Quiz de evaluación inicial','Evaluación'],
+    ]},
+  { id:'m02', num:'M02', title:'Redes e Internet: Cómo funciona todo', sub:'NETWORKING · 6H', tag:'TEORÍA', tagCls:'tag-t', dur:'6h',
+    desc:'Las redes son el campo de batalla digital. Sin entender cómo fluye la información, no puedes protegerla.',
+    lessons:[
+      ['Modelo OSI y TCP/IP explicado sin complicaciones','Video'],
+      ['Protocolos esenciales: HTTP/S, DNS, DHCP, SSH','Lectura'],
+      ['Direcciones IP, puertos y qué revelan','Lectura'],
+      ['Wi-Fi: WEP, WPA, WPA2, WPA3 — diferencias','Video'],
+      ['Firewalls, proxies y VPNs: qué hacen realmente','Lectura'],
+      ['Lab: Analizar tráfico con Wireshark (básico)','Lab'],
+    ]},
+  { id:'m03', num:'M03', title:'Amenazas y Tipos de Ataques', sub:'THREAT LANDSCAPE · 6H', tag:'PRÁCTICO', tagCls:'tag-p', dur:'6h',
+    desc:'Conoce al enemigo. Aprende a reconocer los ataques más comunes antes de que te afecten.',
+    lessons:[
+      ['Malware: virus, troyanos, ransomware, spyware','Video'],
+      ['Phishing, spear phishing y smishing','Lectura'],
+      ['Ingeniería social: el hack humano más efectivo','Video'],
+      ['Ataques de contraseña: fuerza bruta, diccionario','Lectura'],
+      ['DoS y DDoS: cuando te saturan de tráfico','Lectura'],
+      ['Man-in-the-Middle (MitM)','Video'],
+      ['Lab: Simular e identificar un ataque de phishing','Lab'],
+    ]},
+  { id:'m04', num:'M04', title:'Gestión de Identidad y Contraseñas', sub:'IDENTITY SECURITY · 4H', tag:'PRÁCTICO', tagCls:'tag-p', dur:'4h',
+    desc:'El 80% de las brechas de datos involucran credenciales débiles. Módulo inmediato e impactante.',
+    lessons:[
+      ['Anatomía de una contraseña segura','Lectura'],
+      ['Gestores de contraseñas: Bitwarden, 1Password','Video'],
+      ['Autenticación Multifactor (MFA/2FA)','Video'],
+      ['Passkeys y el futuro sin contraseñas','Lectura'],
+      ['Lab: Configurar MFA y un gestor de contraseñas','Lab'],
+    ]},
+  { id:'m05', num:'M05', title:'Seguridad en Dispositivos y Sistemas', sub:'ENDPOINT SECURITY · 5H', tag:'PRÁCTICO', tagCls:'tag-p', dur:'5h',
+    desc:'Tu PC y smartphone son puertas de entrada para los atacantes. Aprende a cerrarlas.',
+    lessons:[
+      ['Hardening de sistemas: qué es y cómo aplicarlo','Lectura'],
+      ['Actualizaciones de software: por qué son vitales','Video'],
+      ['Antivirus, EDR y diferencias clave','Lectura'],
+      ['Cifrado de disco: BitLocker, FileVault, LUKS','Video'],
+      ['Seguridad en smartphones: permisos y privacidad','Lectura'],
+      ['Backups: regla 3-2-1 y herramientas','Video'],
+      ['Lab: Auditar y asegurar Windows/Linux','Lab'],
+    ]},
+  { id:'m06', num:'M06', title:'Privacidad y Navegación Segura', sub:'PRIVACY & WEB · 5H', tag:'LAB', tagCls:'tag-l', dur:'5h',
+    desc:'Cada clic deja rastros. Aprende a reducir tu huella digital y navegar con inteligencia.',
+    lessons:[
+      ['Cómo te rastrean: cookies, fingerprinting','Video'],
+      ['VPNs: mitos, realidades y cuándo usarlas','Lectura'],
+      ['Tor: cómo funciona y cuándo es apropiado','Video'],
+      ['HTTPS, SSL/TLS y verificación de sitios','Lectura'],
+      ['Extensiones de seguridad: uBlock, Privacy Badger','Lectura'],
+      ['Redes sociales y OSINT: lo que revelan','Video'],
+      ['Lab: Analizar tu huella digital actual','Lab'],
+    ]},
+  { id:'m07', num:'M07', title:'Respuesta a Incidentes y Primeros Auxilios', sub:'INCIDENT RESPONSE · 5H', tag:'LAB', tagCls:'tag-l', dur:'5h',
+    desc:'¿Qué haces cuando te atacan? La respuesta es la diferencia entre un susto y una catástrofe.',
+    lessons:[
+      ['Ciclo de vida de un incidente de seguridad','Video'],
+      ['Señales de alerta: ¿cómo saber si te hackearon?','Lectura'],
+      ['Contención inmediata: los primeros 30 minutos','Video'],
+      ['Análisis básico de logs y registros','Lectura'],
+      ['Recuperación ante ransomware paso a paso','Video'],
+      ['Reporte de incidentes y comunicación en crisis','Lectura'],
+      ['Lab: Simulacro de respuesta a incidente','Lab'],
+    ]},
+  { id:'m08', num:'M08', title:'Marco Legal, Ético y Rutas Profesionales', sub:'COMPLIANCE & CAREER · 5H', tag:'TEORÍA', tagCls:'tag-t', dur:'5h',
+    desc:'Entiende el ecosistema legal y las múltiples rutas de carrera en el campo más demandado del mercado tech.',
+    lessons:[
+      ['Marco legal: GDPR, Habeas Data, delitos informáticos','Lectura'],
+      ['Ética hacker: el código no escrito del profesional','Video'],
+      ['Bug bounty programs: ganar dinero encontrando fallos','Lectura'],
+      ['Roles en ciberseguridad: SOC, pentester, CISO','Video'],
+      ['Certificaciones y rutas de aprendizaje','Lectura'],
+      ['Proyecto final: Auditoría básica de seguridad','Lab'],
+    ]},
+];
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+
+let allDocs = [];
+let selectedDocId = null;
+let currentFilter = 'all';
+let selectedFile = null;
+let chatHistory = [];
+let currentDocData = null;
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+
+async function init() {
+  buildCourseModules();
+  buildSidebar();
+  allDocs = await DB.getDocList();
+  renderDocsList();
+  updateDashboard();
+  document.getElementById('viewerContent').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+
+function switchTab(tab) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (tab === 'dashboard') updateDashboard();
+  if (tab === 'docs') renderDocsList();
+}
+
+function filterByModule(modId) {
+  currentFilter = modId;
+  document.querySelectorAll('.module-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('smod-' + modId)?.classList.add('active');
+  switchTab('docs');
+  renderDocsList();
+}
+
+// ═══════════════════════════════════════════════════════
+//  BUILD COURSE
+// ═══════════════════════════════════════════════════════
+
+function buildCourseModules() {
+  const container = document.getElementById('courseModules');
+  container.innerHTML = MODULES.map((m, i) => `
+    <div class="mod-block ${i === 0 ? 'open' : ''}" onclick="toggleMod(this)">
+      <div class="mod-block-header">
+        <span class="mbh-num">${m.num}</span>
+        <div class="mbh-info">
+          <div class="mbh-title">${m.title}</div>
+          <div class="mbh-sub">// ${m.sub}</div>
+        </div>
+        <div class="mbh-right">
+          <span class="mbh-dur">⏱ ${m.dur}</span>
+          <span class="mod-tag ${m.tagCls}">${m.tag}</span>
+          <span class="mbh-chevron">›</span>
+        </div>
+      </div>
+      <div class="mod-block-body">
+        <div class="mod-block-desc">${m.desc}</div>
+        <ul class="lessons-ul">
+          ${m.lessons.map(([name, type]) => `
+            <li class="lesson-li">
+              <span class="l-dot"></span>
+              <span class="l-name">${name}</span>
+              <span class="l-type">${type}</span>
+            </li>`).join('')}
+        </ul>
+        <div class="mod-doc-list" id="course-mod-docs-${m.id}">
+          <div class="mod-doc-label">▸ DOCUMENTOS DEL MÓDULO</div>
+          <div id="course-mod-docs-inner-${m.id}" style="color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:11px;padding:6px 0;">Sin documentos cargados</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function buildSidebar() {
+  const body = document.getElementById('sidebarBody');
+  const section = body.querySelector('.sidebar-section');
+  const allItem = body.querySelector('#smod-all');
+  // Clear and rebuild
+  body.innerHTML = `<div class="sidebar-section">FILTRAR POR MÓDULO</div>
+    <div class="module-item active" onclick="filterByModule('all')" id="smod-all">
+      <span class="mod-num">ALL</span>
+      <div class="mod-info">
+        <div class="mod-name">Todos los documentos</div>
+        <div class="mod-count" id="smod-all-count">0 archivos</div>
+      </div>
+    </div>
+    <div class="module-item" onclick="filterByModule('general')" id="smod-general">
+      <span class="mod-num">GEN</span>
+      <div class="mod-info">
+        <div class="mod-name">Sin módulo</div>
+        <div class="mod-count" id="smod-general-count">0</div>
+      </div>
+    </div>
+    ${MODULES.map(m => `
+    <div class="module-item" onclick="filterByModule('${m.id}')" id="smod-${m.id}">
+      <span class="mod-num">${m.num}</span>
+      <div class="mod-info">
+        <div class="mod-name">${m.title}</div>
+        <div class="mod-count" id="smod-${m.id}-count">0</div>
+      </div>
+    </div>`).join('')}`;
+}
+
+function toggleMod(el) { el.classList.toggle('open'); }
+
+// ═══════════════════════════════════════════════════════
+//  FILE UPLOAD
+// ═══════════════════════════════════════════════════════
+
+function openUploadModal() { document.getElementById('uploadModal').classList.add('open'); }
+function closeUploadModal() {
+  document.getElementById('uploadModal').classList.remove('open');
+  clearFileSelect();
+  document.getElementById('uploadDesc').value = '';
+}
+
+function getFileIcon(name, type) {
+  if (type && type.includes('pdf') || name.endsWith('.pdf')) return '📕';
+  if (type && type.includes('image') || /\.(png|jpg|jpeg|gif|webp)$/i.test(name)) return '🖼️';
+  if (/\.(txt|md)$/i.test(name)) return '📝';
+  if (/\.(doc|docx)$/i.test(name)) return '📘';
+  if (/\.(csv)$/i.test(name)) return '📊';
+  return '📄';
+}
+
+function getFileTypeLabel(name) {
+  const ext = name.split('.').pop().toUpperCase();
+  return ext || 'FILE';
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  selectedFile = file;
+  document.getElementById('uploadPreview').style.display = 'flex';
+  document.getElementById('prevIcon').textContent = getFileIcon(file.name, file.type);
+  document.getElementById('prevName').textContent = file.name;
+  document.getElementById('prevSize').textContent = formatSize(file.size) + ' · ' + getFileTypeLabel(file.name);
+  document.getElementById('btnUpload').disabled = false;
+
+  // Drag-drop style
+  const dz = document.getElementById('dropZone');
+  dz.style.opacity = '0.5';
+}
+
+function clearFileSelect() {
+  selectedFile = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('uploadPreview').style.display = 'none';
+  document.getElementById('btnUpload').disabled = true;
+  document.getElementById('dropZone').style.opacity = '1';
+}
+
+// Drag and drop
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) { selectedFile = file; handleFileSelect({ target: { files: [file] } }); }
+});
+
+async function uploadDocument() {
+  if (!selectedFile) return;
+  const modId = document.getElementById('uploadModule').value;
+  const desc = document.getElementById('uploadDesc').value;
+  const btn = document.getElementById('btnUpload');
+  btn.textContent = '⏳ PROCESANDO...';
+  btn.disabled = true;
+
+  try {
+    // Read file as base64
+    const base64 = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result.split(',')[1]);
+      r.onerror = rej;
+      r.readAsDataURL(selectedFile);
+    });
+
+    const id = 'doc_' + Date.now();
+    const docMeta = {
+      id, name: selectedFile.name, type: selectedFile.type,
+      size: selectedFile.size, module: modId,
+      description: desc, uploadedAt: new Date().toISOString(),
+      summary: null, status: 'processing', base64Stored: true,
+      chatHistory: []
+    };
+
+    // Save metadata first
+    const list = await DB.getDocList();
+    list.unshift(docMeta);
+    await DB.saveDocList(list);
+    await DB.saveDoc(id, { ...docMeta, base64 });
+
+    allDocs = list;
+    closeUploadModal();
+    renderDocsList();
+    updateSidebarCounts();
+    showToast('✓ Documento subido. Generando resumen IA...');
+    await DB.addActivity('📥', `Subido: ${selectedFile.name} → ${modId.toUpperCase()}`);
+
+    // AI Summary
+    const summary = await generateAISummary(selectedFile.name, selectedFile.type, base64, selectedFile.size);
+    docMeta.summary = summary;
+    docMeta.status = 'ready';
+    const updatedList = await DB.getDocList();
+    const idx = updatedList.findIndex(d => d.id === id);
+    if (idx >= 0) { updatedList[idx].summary = summary; updatedList[idx].status = 'ready'; }
+    await DB.saveDocList(updatedList);
+    await DB.saveDoc(id, { ...docMeta, base64, summary, status: 'ready' });
+    allDocs = updatedList;
+    renderDocsList();
+    updateCourseModuleDocs();
+    if (selectedDocId === id) openDoc(id);
+    showToast('✓ Resumen IA generado');
+    await DB.addActivity('🤖', `IA analizó: ${selectedFile.name}`);
+
+  } catch (err) {
+    showToast('Error al procesar documento: ' + err.message, true);
+    btn.textContent = '⬆ SUBIR Y ANALIZAR';
+    btn.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  AI FUNCTIONS
+// ═══════════════════════════════════════════════════════
+
+async function callClaude(messages, systemPrompt, docBase64, docType, docName) {
+  const msgContent = [];
+
+  // Attach document if PDF or image
+  if (docBase64 && docType) {
+    if (docType.includes('pdf')) {
+      msgContent.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: docBase64 } });
+    } else if (docType.includes('image')) {
+      const mt = docType.includes('png') ? 'image/png' : docType.includes('gif') ? 'image/gif' : 'image/jpeg';
+      msgContent.push({ type: 'image', source: { type: 'base64', media_type: mt, data: docBase64 } });
+    }
+  }
+
+  // Build final messages
+  const finalMessages = messages.map((m, i) => {
+    if (i === 0 && msgContent.length > 0) {
+      return { role: m.role, content: [...msgContent, { type: 'text', text: m.content }] };
+    }
+    return m;
+  });
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: finalMessages
+    })
+  });
+  const data = await resp.json();
+  return data.content?.[0]?.text || '—';
+}
+
+async function generateAISummary(name, type, base64, size) {
+  const isTextual = !type.includes('pdf') && !type.includes('image');
+  if (isTextual && size > 50000) return '(Archivo muy grande para resumen automático)';
+  try {
+    if (type.includes('pdf') || type.includes('image')) {
+      return await callClaude(
+        [{ role: 'user', content: `Analiza este documento llamado "${name}" y genera un resumen ejecutivo en español de máximo 3 oraciones. Sé conciso y directo.` }],
+        'Eres un asistente de ciberseguridad que analiza materiales de un curso. Responde siempre en español.',
+        base64, type, name
+      );
+    } else {
+      return `Documento: ${name} (${formatSize(size)}) — Usa el chat de IA para hacer preguntas sobre su contenido.`;
+    }
+  } catch { return 'Resumen no disponible.'; }
+}
+
+async function askAI_init() {
+  if (!currentDocData) return;
+  const welcomeMsg = {
+    role: 'assistant',
+    content: `¡Listo! Tengo acceso al documento **${currentDocData.name}**. Puedes preguntarme:\n- Resumen detallado\n- Conceptos específicos\n- Cómo aplica al módulo ${currentDocData.module.toUpperCase()}\n- Preguntas de práctica\n\n¿Qué quieres saber?`
+  };
+  chatHistory = [welcomeMsg];
+  renderChat();
+  document.getElementById('btnAskAI').style.display = 'none';
+}
+
+async function sendAiMessage() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text || !currentDocData) return;
+  input.value = '';
+
+  const userMsg = { role: 'user', content: text };
+  chatHistory.push(userMsg);
+  renderChat();
+  addTypingIndicator();
+
+  const stats = await DB.getStats();
+  stats.aiQueries = (stats.aiQueries || 0) + 1;
+  await DB.saveStats(stats);
+
+  try {
+    const docFull = await DB.getDoc(currentDocData.id);
+    const hasDoc = docFull && docFull.base64 && (currentDocData.type.includes('pdf') || currentDocData.type.includes('image'));
+    const historyMsgs = chatHistory.filter(m => m.role === 'user' || m.role === 'assistant')
+      .slice(-10)
+      .map(m => ({ role: m.role, content: typeof m.content === 'string' ? m.content : m.content }));
+
+    let response;
+    if (hasDoc) {
+      response = await callClaude(
+        historyMsgs,
+        `Eres un tutor experto en ciberseguridad. Estás ayudando a un estudiante con el documento "${currentDocData.name}" del módulo ${currentDocData.module} del curso CiberSec 101. Responde en español, de forma clara y pedagógica.`,
+        docFull.base64, currentDocData.type, currentDocData.name
+      );
+    } else {
+      response = await callClaude(
+        historyMsgs,
+        `Eres un tutor experto en ciberseguridad asistiendo con el documento "${currentDocData.name}" del módulo ${currentDocData.module}. El documento es de tipo ${currentDocData.type}. Ayuda al estudiante con preguntas conceptuales sobre ciberseguridad relacionadas al tema. Responde en español.`,
+        null, null, currentDocData.name
+      );
+    }
+    removeTypingIndicator();
+    chatHistory.push({ role: 'assistant', content: response });
+    renderChat();
+    await DB.addActivity('💬', `Chat IA sobre: ${currentDocData.name}`);
+  } catch(err) {
+    removeTypingIndicator();
+    chatHistory.push({ role: 'assistant', content: '⚠️ Error al conectar con IA: ' + err.message });
+    renderChat();
+  }
+}
+
+function handleAiKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAiMessage(); }
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER DOCS LIST
+// ═══════════════════════════════════════════════════════
+
+function filterDocs() {
+  const q = document.getElementById('docsSearch').value.toLowerCase();
+  renderDocsList(q);
+}
+
+function renderDocsList(searchQ = '') {
+  const container = document.getElementById('docsList');
+  let docs = allDocs;
+
+  if (currentFilter !== 'all') docs = docs.filter(d => d.module === currentFilter);
+  if (searchQ) docs = docs.filter(d => d.name.toLowerCase().includes(searchQ) || (d.description || '').toLowerCase().includes(searchQ));
+
+  if (docs.length === 0) {
+    container.innerHTML = `<div class="empty-docs">
+      <div class="big-icon">📂</div>
+      <p>Sin documentos${currentFilter !== 'all' ? ' en este módulo' : ''}<br>Haz clic en <strong>+ SUBIR</strong> para agregar</p>
+    </div>`;
+    updateSidebarCounts();
+    return;
+  }
+
+  container.innerHTML = docs.map(doc => {
+    const modLabel = doc.module === 'general' ? 'SIN MÓDULO' : doc.module.toUpperCase();
+    return `<div class="doc-card ${selectedDocId === doc.id ? 'selected' : ''}" onclick="openDoc('${doc.id}')">
+      <div class="doc-status ${doc.status || 'ready'}"></div>
+      <div class="doc-card-top">
+        <div class="doc-type-icon">${getFileIcon(doc.name, doc.type)}</div>
+        <div class="doc-card-info">
+          <div class="doc-card-name">${doc.name}</div>
+          <div class="doc-card-meta">${formatSize(doc.size)} · ${new Date(doc.uploadedAt).toLocaleDateString('es-CO')}</div>
+          ${doc.description ? `<div class="doc-card-meta" style="color:var(--text);margin-top:2px;">${doc.description}</div>` : ''}
+          <div class="doc-card-module">${modLabel}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateSidebarCounts();
+}
+
+function updateSidebarCounts() {
+  const total = allDocs.length;
+  const el = document.getElementById('sidebarDocCount');
+  if (el) el.textContent = total + ' docs';
+
+  const allEl = document.getElementById('smod-all-count');
+  if (allEl) allEl.textContent = total + ' archivos';
+
+  const genEl = document.getElementById('smod-general-count');
+  if (genEl) {
+    const cnt = allDocs.filter(d => d.module === 'general').length;
+    genEl.textContent = cnt + ' archivos';
+  }
+
+  MODULES.forEach(m => {
+    const el = document.getElementById('smod-' + m.id + '-count');
+    if (el) {
+      const cnt = allDocs.filter(d => d.module === m.id).length;
+      el.textContent = cnt + ' archivos';
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  OPEN DOC
+// ═══════════════════════════════════════════════════════
+
+async function openDoc(id) {
+  selectedDocId = id;
+  chatHistory = [];
+  renderDocsList(document.getElementById('docsSearch').value.toLowerCase());
+
+  const doc = allDocs.find(d => d.id === id);
+  if (!doc) return;
+
+  const docFull = await DB.getDoc(id);
+  currentDocData = { ...doc, ...docFull };
+
+  // Show viewer
+  document.getElementById('viewerEmpty').style.display = 'none';
+  const vc = document.getElementById('viewerContent');
+  vc.style.display = 'flex';
+  vc.style.flexDirection = 'column';
+
+  document.getElementById('viewerIcon').textContent = getFileIcon(doc.name, doc.type);
+  document.getElementById('viewerTitle').textContent = doc.name;
+  document.getElementById('btnAskAI').style.display = 'flex';
+
+  // Info grid
+  const modName = doc.module === 'general' ? 'Sin módulo' : MODULES.find(m => m.id === doc.module)?.title || doc.module;
+  document.getElementById('docInfoGrid').innerHTML = `
+    <div class="info-item"><label>TIPO</label><value>${getFileTypeLabel(doc.name)}</value></div>
+    <div class="info-item"><label>TAMAÑO</label><value>${formatSize(doc.size)}</value></div>
+    <div class="info-item"><label>MÓDULO</label><value>${modName}</value></div>
+    <div class="info-item"><label>SUBIDO</label><value>${new Date(doc.uploadedAt).toLocaleString('es-CO')}</value></div>
+    ${doc.description ? `<div class="info-item" style="grid-column:span 2"><label>DESCRIPCIÓN</label><value>${doc.description}</value></div>` : ''}
+  `;
+
+  const summaryBox = document.getElementById('docSummaryBox');
+  if (doc.status === 'processing') {
+    summaryBox.className = 'ai-summary-box loading';
+    summaryBox.textContent = '⏳ Generando resumen...';
+  } else {
+    summaryBox.className = 'ai-summary-box';
+    summaryBox.textContent = doc.summary || 'Sin resumen disponible.';
+  }
+
+  // Render image preview if image
+  const messagesArea = document.getElementById('aiMessages');
+  messagesArea.innerHTML = '';
+  if (doc.type && doc.type.includes('image') && docFull?.base64) {
+    messagesArea.innerHTML = `<div style="text-align:center;padding:20px;">
+      <img src="data:${doc.type};base64,${docFull.base64}" style="max-width:100%;max-height:300px;border:1px solid var(--border);" />
+    </div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);text-align:center;padding:8px;">
+      Haz clic en "ANALIZAR CON IA" para iniciar el chat
+    </div>`;
+  } else {
+    messagesArea.innerHTML = `<div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);text-align:center;padding:20px;line-height:2;">
+      Haz clic en <span style="color:var(--accent4)">🤖 ANALIZAR CON IA</span><br>para iniciar el asistente sobre este documento
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  CHAT RENDER
+// ═══════════════════════════════════════════════════════
+
+function renderChat() {
+  const container = document.getElementById('aiMessages');
+  container.innerHTML = chatHistory.map(m => `
+    <div class="msg">
+      <div class="msg-avatar ${m.role === 'user' ? 'user-av' : 'ai-av'}">${m.role === 'user' ? '👤' : '🤖'}</div>
+      <div class="msg-body">
+        <div class="msg-label">${m.role === 'user' ? 'TÚ' : 'ASISTENTE IA'}</div>
+        <div class="msg-text ${m.role === 'user' ? 'user-msg' : 'ai-msg'}">${formatMsgContent(m.content)}</div>
+      </div>
+    </div>`).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+function formatMsgContent(text) {
+  if (typeof text !== 'string') return '';
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`(.*?)`/g, '<code style="background:var(--bg);padding:1px 5px;font-family:Share Tech Mono,monospace;font-size:12px;">$1</code>')
+    .replace(/\n/g, '<br>');
+}
+
+function addTypingIndicator() {
+  const container = document.getElementById('aiMessages');
+  const div = document.createElement('div');
+  div.className = 'msg';
+  div.id = 'typing-indicator';
+  div.innerHTML = `<div class="msg-avatar ai-av">🤖</div>
+    <div class="msg-body">
+      <div class="msg-label">ASISTENTE IA</div>
+      <div class="msg-text ai-msg"><div class="typing"><span></span><span></span><span></span></div></div>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTypingIndicator() {
+  document.getElementById('typing-indicator')?.remove();
+}
+
+// ═══════════════════════════════════════════════════════
+//  DELETE DOC
+// ═══════════════════════════════════════════════════════
+
+async function deleteCurrentDoc() {
+  if (!selectedDocId) return;
+  const doc = allDocs.find(d => d.id === selectedDocId);
+  if (!doc) return;
+  if (!confirm(`¿Eliminar "${doc.name}"?`)) return;
+
+  await DB.deleteDoc(selectedDocId);
+  const list = await DB.getDocList();
+  const updated = list.filter(d => d.id !== selectedDocId);
+  await DB.saveDocList(updated);
+  allDocs = updated;
+  selectedDocId = null;
+  currentDocData = null;
+  chatHistory = [];
+
+  document.getElementById('viewerEmpty').style.display = 'flex';
+  document.getElementById('viewerContent').style.display = 'none';
+  renderDocsList();
+  updateSidebarCounts();
+  updateCourseModuleDocs();
+  showToast('✓ Documento eliminado');
+  await DB.addActivity('🗑', `Eliminado: ${doc.name}`);
+  updateDashboard();
+}
+
+// ═══════════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════════
+
+async function updateDashboard() {
+  allDocs = await DB.getDocList();
+
+  const totalSize = allDocs.reduce((s, d) => s + (d.size || 0), 0);
+  const modsCovered = new Set(allDocs.map(d => d.module).filter(m => m !== 'general')).size;
+  const stats = await DB.getStats();
+
+  document.getElementById('statDocs').textContent = allDocs.length;
+  document.getElementById('statModsCovered').textContent = modsCovered;
+  document.getElementById('statStorage').textContent = formatSize(totalSize);
+  document.getElementById('statAiQueries').textContent = stats.aiQueries || 0;
+
+  // Module progress
+  const mpList = document.getElementById('moduleProgressList');
+  mpList.innerHTML = MODULES.map(m => {
+    const cnt = allDocs.filter(d => d.module === m.id).length;
+    const pct = Math.min(cnt * 20, 100);
+    return `<div class="mp-item">
+      <span class="mp-num">${m.num}</span>
+      <span class="mp-name">${m.title}</span>
+      <span class="mp-docs">${cnt} docs</span>
+      <div class="mp-bar-wrap"><div class="mp-bar" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+
+  // Activity
+  const activity = await DB.getActivity();
+  const actEl = document.getElementById('activityList');
+  if (activity.length === 0) {
+    actEl.innerHTML = `<div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);padding:20px;text-align:center;">Sin actividad registrada</div>`;
+  } else {
+    actEl.innerHTML = activity.slice(0, 8).map(a => `
+      <div class="activity-item">
+        <span class="activity-icon">${a.icon}</span>
+        <span class="activity-text">${a.text}</span>
+        <span class="activity-time">${a.time}</span>
+      </div>`).join('');
+  }
+
+  updateCourseModuleDocs();
+  updateSidebarCounts();
+}
+
+function updateCourseModuleDocs() {
+  MODULES.forEach(m => {
+    const inner = document.getElementById('course-mod-docs-inner-' + m.id);
+    if (!inner) return;
+    const docs = allDocs.filter(d => d.module === m.id);
+    if (docs.length === 0) {
+      inner.innerHTML = `<span style="color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:11px;">Sin documentos cargados — <span style="color:var(--accent4);cursor:pointer;" onclick="switchTab('docs');filterByModule('${m.id}')">+ Agregar</span></span>`;
+    } else {
+      inner.innerHTML = docs.map(d => `
+        <div class="mod-doc-item" onclick="switchTab('docs');setTimeout(()=>openDoc('${d.id}'),100)">
+          <span>${getFileIcon(d.name, d.type)}</span>
+          <span class="mod-doc-item-name">${d.name}</span>
+          <span class="mod-doc-item-size">${formatSize(d.size)}</span>
+        </div>`).join('');
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXPORT / REPORT
+// ═══════════════════════════════════════════════════════
+
+async function exportAll() {
+  const docs = await DB.getDocList();
+  const index = {
+    generado: new Date().toISOString(),
+    curso: 'CiberSec 101',
+    totalDocumentos: docs.length,
+    documentos: docs.map(d => ({
+      id: d.id, nombre: d.name, tipo: d.type, tamaño: formatSize(d.size),
+      módulo: d.module, descripción: d.description, estado: d.status,
+      subido: d.uploadedAt, resumen: d.summary
+    }))
+  };
+  const blob = new Blob([JSON.stringify(index, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'cybersec101-index.json'; a.click();
+  showToast('✓ Índice exportado');
+  await DB.addActivity('📦', 'Índice de documentos exportado');
+}
+
+async function generateReport() {
+  const btn = document.querySelector('[onclick="generateReport()"]');
+  btn.textContent = '⏳ GENERANDO...';
+  btn.disabled = true;
+  const reportBox = document.getElementById('reportBox');
+  reportBox.style.display = 'block';
+  reportBox.textContent = 'Analizando repositorio de documentos...';
+
+  const docs = allDocs;
+  const summary = docs.map(d => `- ${d.name} (${d.module}, ${formatSize(d.size)}): ${d.summary || 'sin resumen'}`).join('\n');
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: `Soy instructor del curso "CiberSec 101" de ciberseguridad básica. Tengo ${docs.length} documentos cargados:\n\n${summary || 'Ningún documento cargado aún.'}\n\nGenera un reporte breve en español que incluya: (1) análisis de cobertura del curso, (2) qué módulos necesitan más material, (3) recomendaciones de recursos adicionales para los módulos sin documentos. Sé conciso y práctico.`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.[0]?.text || 'Sin respuesta';
+    reportBox.textContent = text;
+    const stats = await DB.getStats();
+    stats.aiQueries = (stats.aiQueries || 0) + 1;
+    await DB.saveStats(stats);
+    document.getElementById('statAiQueries').textContent = stats.aiQueries;
+    await DB.addActivity('📊', 'Reporte IA del repositorio generado');
+  } catch(e) {
+    reportBox.textContent = 'Error: ' + e.message;
+  }
+
+  btn.textContent = '🤖 REPORTE IA';
+  btn.disabled = false;
+}
+
+async function clearAllDocs() {
+  if (!confirm('¿Eliminar TODOS los documentos? Esta acción no se puede deshacer.')) return;
+  for (const d of allDocs) await DB.deleteDoc(d.id);
+  await DB.saveDocList([]);
+  allDocs = [];
+  selectedDocId = null;
+  currentDocData = null;
+  chatHistory = [];
+  document.getElementById('viewerEmpty').style.display = 'flex';
+  document.getElementById('viewerContent').style.display = 'none';
+  renderDocsList();
+  updateDashboard();
+  showToast('✓ Base de datos limpiada');
+  await DB.addActivity('🧹', 'Base de datos de documentos limpiada');
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ═══════════════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════════════
+
+init();
+</script>
+</body>
+</html>

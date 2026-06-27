@@ -1,0 +1,7 @@
+Escaneo de 192.168.1.5 - 2025-06-20 10:57:50.867377
+
+Puerto 21: ABIERTO
+Puerto 135: ABIERTO
+Puerto 139: ABIERTO
+Puerto 445: ABIERTO
+Puerto 3306: ABIERTO

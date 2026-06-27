@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Nombre de Empresa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #8AF754;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #6CCC3D;
+      padding: 20px;
+      text-align: center;
+    }
+    nav button {
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      background-color: black;
+      color: white;
+      cursor: pointer;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    .active {
+      display: block;
+    }
+    .card {
+      border: 2px solid #000;
+      padding: 10px;
+      margin: 10px auto;
+      background-color: #BDFE9B;
+      width: 80%;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>NOMBRE DE EMPRESA</h1>
+    <nav>
+      <button onclick="showSection('inicio')">Inicio</button>
+      <button onclick="showSection('servicios')">Servicios</button>
+      <button onclick="showSection('normas')">Normas</button>
+      <button onclick="showSection('contacto')">Contacto</button>
+      <button onclick="showSection('proyectos')">Proyectos Realizados</button>
+    </nav>
+  </header>
+
+  <section id="inicio" class="active">
+    <div class="card">
+      <h3>Misión</h3>
+      <p>Aquí va la misión de la empresa</p>
+    </div>
+    <div class="card">
+      <h3>Visión</h3>
+      <p>Aquí va la visión de la empresa</p>
+    </div>
+    <div class="card">
+      <h3>Sobre Nosotros</h3>
+      <p>Aquí va la historia de la empresa. Aquí va la historia de la empresa.</p>
+    </div>
+  </section>
+
+  <section id="servicios">
+    <div class="card">
+      <h3>Servicios</h3>
+      <p>Aquí puedes listar los servicios que ofrece la empresa.</p>
+    </div>
+  </section>
+
+  <section id="normas">
+    <div class="card">
+      <h3>Normas</h3>
+      <p>Aquí van todas las normativas y reglamentaciones de la empresa en orden de lista.</p>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="card">
+      <h3>Contacto</h3>
+      <p>Aquí van todos los medios de contactos: números telefónicos, emails y redes sociales.</p>
+      <p>Opción de enviar un mail al correo principal y de añadir un archivo PDF.</p>
+    </div>
+  </section>
+
+  <section id="proyectos">
+    <div class="card">
+      <h3>Proyecto 1</h3>
+      <p>Aquí va todo lo relacionado con el proyecto 1</p>
+    </div>
+    <div class="card">
+      <h3>Proyecto 2</h3>
+      <p>Aquí va todo lo relacionado con el proyecto 2</p>
+    </div>
+    <div class="card">
+      <h3>Proyecto 3</h3>
+      <p>Aquí va todo lo relacionado con el proyecto 3</p>
+    </div>
+    <div class="card">
+      <h3>Proyecto 4</h3>
+      <p>Aquí va todo lo relacionado con el proyecto 4</p>
+    </div>
+  </section>
+
+  <script>
+    function showSection(id) {
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
