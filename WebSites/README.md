@@ -1,1 +1,1 @@
-kdkvmfkmvkd
+Tienda online para la gestion comercial y administrativa
