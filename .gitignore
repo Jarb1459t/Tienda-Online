@@ -1,0 +1,11 @@
+# Dependencias
+node_modules/
+
+# Prisma
+/prisma/client/
+# (Si usas una ruta de salida personalizada, agrégala aquí)
+
+# Entorno y logs
+.env
+dist/
+*.log
